@@ -28,15 +28,51 @@ defmodule ElixirlsJustWantToHavePuns do
   import Enum
 
   def main([word]) do
-    each(run(word), &(IO.puts(&1)))
+    run(word)
   end
 
   def run(word) do
-    RhymebrainResults.for(word)
-    |> flat_map(&(puns(word, &1)))
+    rhymebrain_results = RhymebrainResults.for(word)
+
+    rhymebrain_results
+    |> Enum.map fn(rhymebrain_result) ->
+      PunMaker.spawn_make(self, word, rhymebrain_result)
+    end
+
+    receive_puns(length(rhymebrain_results), [])
   end
 
-  def puns(original_word, rhymebrain_result) do
+  defp receive_puns(length, result) do
+    receive do
+      puns ->
+        result = puns ++ result
+
+        if length == 1 do
+          IO.puts(print_puns(result))
+        else
+          receive_puns(length - 1, result)
+        end
+    end
+  end
+
+  defp print_puns(puns) do
+    puns
+    |> Enum.each &(IO.puts(&1))
+  end
+end
+
+defmodule PunMaker do
+  import Enum
+
+  def spawn_make(pid, original_word, rhymebrain_result) do
+    spawn __MODULE__, :send_make, [pid, original_word, rhymebrain_result]
+  end
+
+  def send_make(pid, original_word, rhymebrain_result) do
+    send pid, make(original_word, rhymebrain_result)
+  end
+
+  def make(original_word, rhymebrain_result) do
     Phrases.with_word(rhymebrain_result.word)
     |> map(&(Pun.make(&1, original_word, rhymebrain_result)))
   end
