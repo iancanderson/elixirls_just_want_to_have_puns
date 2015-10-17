@@ -32,7 +32,7 @@ defmodule ElixirlsJustWantToHavePuns do
 
     rhymebrain_results
     |> map fn(rhymebrain_result) ->
-      PunFinder.spawn_from_rhyme(self, word, rhymebrain_result)
+      PunFromRhyme.spawn_make(self, word, rhymebrain_result)
     end
 
     receive_puns(length(rhymebrain_results), [])
@@ -56,18 +56,18 @@ defmodule ElixirlsJustWantToHavePuns do
   end
 end
 
-defmodule PunFinder do
+defmodule PunFromRhyme do
   import Enum
 
-  def spawn_from_rhyme(pid, original_word, rhymebrain_result) do
-    spawn __MODULE__, :send_from_rhyme, [pid, original_word, rhymebrain_result]
+  def spawn_make(pid, original_word, rhymebrain_result) do
+    spawn __MODULE__, :send_make, [pid, original_word, rhymebrain_result]
   end
 
-  def send_from_rhyme(pid, original_word, rhymebrain_result) do
-    send pid, from_rhyme(original_word, rhymebrain_result)
+  def send_make(pid, original_word, rhymebrain_result) do
+    send pid, make(original_word, rhymebrain_result)
   end
 
-  def from_rhyme(original_word, rhymebrain_result) do
+  def make(original_word, rhymebrain_result) do
     Phrases.with_word(rhymebrain_result.word)
     |> map(&(Pun.make(&1, original_word, rhymebrain_result)))
   end
