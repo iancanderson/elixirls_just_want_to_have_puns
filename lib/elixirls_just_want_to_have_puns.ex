@@ -40,7 +40,7 @@ defmodule ElixirlsJustWantToHavePuns do
 
   defp receive_puns(1, result) do
     receive do
-      puns -> IO.puts(print_puns(puns ++ result))
+      puns -> print_puns(puns ++ result)
     end
   end
 
