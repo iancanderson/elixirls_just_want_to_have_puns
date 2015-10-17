@@ -31,7 +31,7 @@ defmodule ElixirlsJustWantToHavePuns do
     rhymebrain_results = RhymebrainResults.for(word)
 
     rhymebrain_results
-    |> Enum.map fn(rhymebrain_result) ->
+    |> map fn(rhymebrain_result) ->
       PunMaker.spawn_make(self, word, rhymebrain_result)
     end
 
@@ -52,7 +52,7 @@ defmodule ElixirlsJustWantToHavePuns do
 
   defp print_puns(puns) do
     puns
-    |> Enum.each &(IO.puts(&1))
+    |> each &(IO.puts(&1))
   end
 end
 
