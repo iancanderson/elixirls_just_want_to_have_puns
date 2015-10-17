@@ -28,10 +28,6 @@ defmodule ElixirlsJustWantToHavePuns do
   import Enum
 
   def main([word]) do
-    run(word)
-  end
-
-  def run(word) do
     rhymebrain_results = RhymebrainResults.for(word)
 
     rhymebrain_results
@@ -48,9 +44,9 @@ defmodule ElixirlsJustWantToHavePuns do
     end
   end
 
-  defp receive_puns(length, result) do
+  defp receive_puns(rhymes_remaining, result) do
     receive do
-      puns -> receive_puns(length - 1, puns ++ result)
+      puns -> receive_puns(rhymes_remaining - 1, puns ++ result)
     end
   end
 
