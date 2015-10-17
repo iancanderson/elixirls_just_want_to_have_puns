@@ -42,16 +42,15 @@ defmodule ElixirlsJustWantToHavePuns do
     receive_puns(length(rhymebrain_results), [])
   end
 
+  defp receive_puns(1, result) do
+    receive do
+      puns -> IO.puts(print_puns(puns ++ result))
+    end
+  end
+
   defp receive_puns(length, result) do
     receive do
-      puns ->
-        result = puns ++ result
-
-        if length == 1 do
-          IO.puts(print_puns(result))
-        else
-          receive_puns(length - 1, result)
-        end
+      puns -> receive_puns(length - 1, puns ++ result)
     end
   end
 
