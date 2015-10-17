@@ -32,7 +32,7 @@ defmodule ElixirlsJustWantToHavePuns do
 
     rhymebrain_results
     |> map fn(rhymebrain_result) ->
-      PunFromRhyme.spawn_make(self, word, rhymebrain_result)
+      PunsFromRhyme.spawn_make(self, word, rhymebrain_result)
     end
 
     receive_puns(length(rhymebrain_results), [])
@@ -56,7 +56,7 @@ defmodule ElixirlsJustWantToHavePuns do
   end
 end
 
-defmodule PunFromRhyme do
+defmodule PunsFromRhyme do
   import Enum
 
   def spawn_make(pid, original_word, rhymebrain_result) do
